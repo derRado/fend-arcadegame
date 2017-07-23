@@ -1,3 +1,10 @@
+// General game settings and state
+var game = {
+    player_lives: 3,
+    finished: false,
+    started: false
+};
+
 // Enemies our player must avoid
 var Enemy = function(row = 1, name = 'Bug') {
     // Variables applied to each of our instances go here,
@@ -30,17 +37,16 @@ Enemy.prototype.update = function(dt) {
     // Move the enemy
     this.x = this.x + (this.speed * 25 * dt);
 
-    // If the enemy moves out of the canvas set the position to the start
+    // If the enemy moves out of the canvas set the position to the start and set a new (random) speed, multiplied by player score
     if (this.x > canvas.width) {
         this.x = 0 - this.width;
-        this.speed = Math.floor(Math.random() * (10 - 1) + 1);
+        this.speed = Math.floor(Math.random() * (10 - 1) + 1 + player.score);
     }
 };
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-
 };
 
 // Now write your own player class
@@ -48,16 +54,14 @@ Enemy.prototype.render = function() {
 // a handleInput() method.
 
 // ** CODE BY DERRADO
-var Player = function(row = 8, col = 4) {
+var Player = function(row = 8, col = 3) {
     this.sprite = 'images/char-boy.png';
     this.row = row;
     this.col = col;
-
+    this.score = 0;
+    this.lives = game.player_lives;
     this.xstep = 101;
     this.ystep = 83;
-
-    this.score = 0;
-    this.catched = false;
 };
 
 
@@ -67,11 +71,35 @@ Player.prototype.update = function() {
     this.y = this.ystep * (this.row - 1) - 10;
 
     // Check if player made it to the water, if so, we've won!
-    if (this.y === -11) {
+    if (this.y === -10) {
         this.score++;
-        //this.y = 404;
+        this.row = 8;
+    }
+
+    // Check if player is catched, if so, reset to start
+    if (this.catched) {
+        // set player to starting row
+        this.row = 8;
+        // substract a player live
+        this.lives--;
+        // set catched to false
+        this.catched = false;
+
+        // All lives lost?
+        if (this.lives === 0) {
+            game.finished = true;
+        }
+
     }
 };
+
+Player.prototype.reset = function() {
+    this.score = 0;
+    this.lives = game.player_lives;
+    this.catched = false;
+    game.finished = false;
+    game.started = true;
+}
 
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
@@ -80,6 +108,18 @@ Player.prototype.render = function() {
 Player.prototype.handleInput = function(pressedKey) {
     var maxRow = 8;
         maxCol = 8;
+
+    // No actions if game is finished
+    if (game.finished)  {
+        return;
+    }
+
+    // No actions if game isn't started
+    if (!game.started) {
+        return;
+    }
+
+    console.log(game.started);
 
 
     if (pressedKey === "up") {
@@ -103,10 +143,11 @@ Player.prototype.handleInput = function(pressedKey) {
 
 
 // Now instantiate your objects.
-var enemy1 = new Enemy(3, 'Sweety');
-var enemy2 = new Enemy(4, 'Bugzilla');
-var enemy3 = new Enemy(6, 'Donkey');
-var enemy4 = new Enemy(7, 'Monkey');
+var enemy1 = new Enemy(2, 'Honkey');
+var enemy2 = new Enemy(3, 'Sweety');
+var enemy3 = new Enemy(4, 'Bugzilla');
+var enemy4 = new Enemy(6, 'Donkey');
+var enemy5 = new Enemy(7, 'Monkey');
 
 // Place all enemy objects in an array called allEnemies
 var allEnemies = [enemy1, enemy2, enemy3, enemy4];
@@ -128,6 +169,8 @@ document.addEventListener('keydown', function(e) {
 
 
 document.addEventListener('click', function() {
-    console.log(Engine);
+    if (game.finished || !game.started) {
+        player.reset();        
+    }
 });
 

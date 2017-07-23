@@ -108,11 +108,11 @@ var Engine = (function(global) {
          * for that particular row of the game level.
          */
         var rowImages = [
-                'images/grass-block.png',   // Top row is grass
                 'images/water-block.png',   // Row 1 of 1 of water
                 'images/stone-block.png',   // Row 1 of 2 of stone
-                'images/stone-block.png',   // Row 2 of 2 of stone
-                'images/water-block.png',   // Row 1 of 1 of water
+                'images/stone-block.png',   // Row 2 of 3 of stone
+                'images/stone-block.png',   // Row 3 of 3 of stone
+                'images/grass-block.png',   // Middle grass row
                 'images/stone-block.png',   // Row 1 of 3 of stone
                 'images/stone-block.png',   // Row 2 of 3 of stone
                 'images/grass-block.png'    // Row 1 of 2 of grass
@@ -138,6 +138,14 @@ var Engine = (function(global) {
             }
         }
 
+        // Render the current game stats like Score and Lives        
+        ctx.clearRect(0,0,canvas.width, 50);
+        ctx.font="30px Verdana";
+        ctx.textAlign="left";
+        ctx.fillText("LIVES: " + player.lives,0,30);
+        ctx.textAlign="right";
+        ctx.fillText("SCORE: " + player.score,canvas.width,30);
+
         renderEntities();
     }
 
@@ -152,7 +160,7 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.render();
         });
-
+        // Render the player
         player.render();
     }
 
@@ -161,7 +169,7 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        // noop
+        // none
     }
 
     /* Go ahead and load all of the images we know we're going to need to
