@@ -1,8 +1,25 @@
-// General game settings and state
+// General game and state settings
 var game = {
     player_lives: 3,
-    finished: false,
-    started: false
+    over: false,
+    started: false,
+    overlay: document.getElementById("overlay"),
+    overlay_text: document.getElementById("text"),
+    death_screen: function() {
+        this.over = true;
+        this.started = false;
+        this.overlay.style.display = "block";
+        this.overlay_text.innerHTML = "GAME OVER!<br>You've scored " + player.score + " time(s)<br><small>Click on the Screen to play again!</small>";    
+    },
+    start_screen: function() {
+        this.over = false;
+        this.started = false;
+        this.overlay.style.display = "block";
+        this.overlay_text.innerHTML = "Click on the Screen to begin playing!<br><br>Move to the water with Arrow-Keys<br><br>Avoid the bugs!!";
+    },
+    hide_screen: function() {
+        this.overlay.style.display = "none";
+    }
 };
 
 // Enemies our player must avoid
@@ -64,7 +81,6 @@ var Player = function(row = 8, col = 3) {
     this.ystep = 83;
 };
 
-
 Player.prototype.update = function() {
     // Update player position
     this.x = this.xstep * (this.col - 1);
@@ -87,7 +103,7 @@ Player.prototype.update = function() {
 
         // All lives lost?
         if (this.lives === 0) {
-            game.finished = true;
+            game.death_screen();
         }
 
     }
@@ -97,8 +113,12 @@ Player.prototype.reset = function() {
     this.score = 0;
     this.lives = game.player_lives;
     this.catched = false;
-    game.finished = false;
+    allEnemies.forEach(function(enemy) {
+        enemy.x = 0 - enemy.width;
+    });    
+    game.over = false;
     game.started = true;
+    game.hide_screen();
 }
 
 Player.prototype.render = function() {
@@ -109,18 +129,10 @@ Player.prototype.handleInput = function(pressedKey) {
     var maxRow = 8;
         maxCol = 8;
 
-    // No actions if game is finished
-    if (game.finished)  {
+    // No actions if game is finished or isn't started
+    if (game.over || !game.started) {
         return;
     }
-
-    // No actions if game isn't started
-    if (!game.started) {
-        return;
-    }
-
-    console.log(game.started);
-
 
     if (pressedKey === "up") {
         if (this.row > 1) {
@@ -169,7 +181,7 @@ document.addEventListener('keydown', function(e) {
 
 
 document.addEventListener('click', function() {
-    if (game.finished || !game.started) {
+    if (game.over || !game.started) {
         player.reset();        
     }
 });

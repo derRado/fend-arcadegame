@@ -65,6 +65,7 @@ var Engine = (function(global) {
      */
     function init() {
         reset();
+        game.start_screen();
         lastTime = Date.now();
         main();
     }
