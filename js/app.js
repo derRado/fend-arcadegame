@@ -9,15 +9,17 @@ var game = {
         this.over = true;
         this.started = false;
         this.overlay.style.display = "block";
-        this.overlay_text.innerHTML = "GAME OVER!<br>You've scored " + player.score + " time(s)<br><small>Click on the Screen to play again!</small>";    
+        this.overlay_text.innerHTML = "GAME OVER!<br><br>You've scored " + player.score + " time(s)<br><br><small>Click on the Screen to play again!</small>";    
     },
     start_screen: function() {
         this.over = false;
         this.started = false;
         this.overlay.style.display = "block";
-        this.overlay_text.innerHTML = "Click on the Screen to begin playing!<br><br>Move to the water with Arrow-Keys<br><br>Avoid the bugs!!";
+        this.overlay_text.innerHTML = "Click on the Screen to begin playing!<br><br>Move to the water with Arrow-Keys to score!<br><br>Score as much as you can!<br><br>Avoid the bugs!!";
     },
     hide_screen: function() {
+        game.over = false;
+        game.started = true;        
         this.overlay.style.display = "none";
     }
 };
@@ -90,12 +92,17 @@ Player.prototype.update = function() {
     if (this.y === -10) {
         this.score++;
         this.row = 8;
+       allEnemies.forEach(function(enemy) {
+            enemy.speed++;
+        });    
     }
 
     // Check if player is catched, if so, reset to start
     if (this.catched) {
         // set player to starting row
         this.row = 8;
+        // set player to starting col
+        this.col = 3;
         // substract a player live
         this.lives--;
         // set catched to false
@@ -116,8 +123,6 @@ Player.prototype.reset = function() {
     allEnemies.forEach(function(enemy) {
         enemy.x = 0 - enemy.width;
     });    
-    game.over = false;
-    game.started = true;
     game.hide_screen();
 }
 
@@ -162,7 +167,7 @@ var enemy4 = new Enemy(6, 'Donkey');
 var enemy5 = new Enemy(7, 'Monkey');
 
 // Place all enemy objects in an array called allEnemies
-var allEnemies = [enemy1, enemy2, enemy3, enemy4];
+var allEnemies = [enemy1, enemy2, enemy3, enemy4, enemy5];
 // Place the player object in a variable called player
 var player = new Player;
 
