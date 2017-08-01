@@ -1,7 +1,5 @@
 # Udacity FEND-Project: Effective JavaScript: Frogger
 
-### TODO: Adhere to http://udacity.github.io/frontend-nanodegree-styleguide/javascript.html
-
 ## Goal of the Game
 The goal is to bring your avatar to the water and score a point by doing so.
 Don't get catched by the bugs, doing so looses one of your precious lives!
