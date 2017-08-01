@@ -11,7 +11,7 @@ Move your avatar around with the arrow-keys
 After loosing all your lives, clicking anywhere on the Startscreen starts the game again
 
 ## How to run
-You can clone the repository and run the index.html file or you can just click this link and start playing immediatly
+You can clone the repository and run the index.html file or you can just [click this link](https://derrado.github.io/fend-arcadegame/) and start playing immediatly
 
 ## License
 The content of this repository is licensed under the MIT License
